@@ -27,6 +27,12 @@ class Cursor(pygame.Rect) :
 
 		self.left, self.top = pygame.mouse.get_pos()
 
+class Jugador() :
+
+	def __init__(self, nombre) :
+
+		self.turno = False
+		self.nombre = nombre
 
 def draw_lines(pantalla) :
 
@@ -72,6 +78,7 @@ def main() :
 
 		cursor1.update(pantalla)
 
+		# colisions
 		if cursor1.colliderect(piece1.rect) :
 
 			piece1.image = piece1.imagen_x
