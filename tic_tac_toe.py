@@ -4,12 +4,12 @@ pygame.init()
 
 class Piece(pygame.sprite.Sprite) :
 
-	def __init__(self, imagen, type_piece,x,y) :
-
-		self.type_piece = type_piece
-		self.imagen_normal = imagen
-		self.imagen_oculta = pygame.image.load("images/fondo_transparente.png")
-		self.image = self.imagen_normal
+	def __init__(self,x,y) :
+		imagen_x = pygame.image.load("images/x.png")
+		imagen_o = pygame.image.load("images/o.png")
+		imagen_transparente = pygame.image.load("images/fondo_transparente.png")
+		self.type_piece = ""
+		self.image = imagen_transparente
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = x,y
 
@@ -41,11 +41,9 @@ def main() :
 	pygame.init()
 
 	pantalla = pygame.display.set_mode([700,500])
-	imagen_x = pygame.image.load("images/x.png")
-	imagen_o = pygame.image.load("images/o.png")
 
-	x1 = Piece(imagen_x,"x",110,110)
-	y1 = Piece(imagen_o,"0",110,110)
+	piece1 = Piece(110,110)
+	piece2 = Piece(110,110)
 	reloj = pygame.time.Clock()
 	salir = False
 
@@ -62,8 +60,8 @@ def main() :
 		pantalla.fill((255,255,255))
 
 		draw_lines(pantalla)
-		#x1.update(pantalla)
-		y1.update(pantalla)
+		piece1.update(pantalla)
+		#y1.update(pantalla)
 		pygame.display.update()
 
 
