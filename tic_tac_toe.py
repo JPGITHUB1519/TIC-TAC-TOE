@@ -192,6 +192,10 @@ def main() :
 	pygame.init()
 
 	pantalla = pygame.display.set_mode([500,600])
+	pygame.display.set_caption("TIC TAC TOE")
+	image_game_icon = pygame.image.load("images/icon.png")
+	pygame.display.set_icon(image_game_icon)
+
 
 	cursor1 = Cursor()
 
