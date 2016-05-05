@@ -69,7 +69,39 @@ def play(cursor, pieza, jugador1, jugador2) :
 			jugador1.turno = True
 			jugador2.turno = False
 			pieza.played = True
-		
+
+def check_structure(game_result) :
+
+	# horinzontally
+
+	for x in range(0,3) :
+
+		if (game_result[x][0] == game_result[x][1] == game_result[x][2]) and game_result[x] != "." :
+
+			return game_result[x][0]
+
+	# vertically
+
+	for x in range(0,3) :
+
+		if (game_result[0][x] == game_result[1][x] == game_result[2][x]) and game_result[x] != "." :
+
+			return game_result[0][x]
+
+	# diagonally
+
+	# principal diagonal
+
+	if game_result[0][0] == "o" and game_result[1][1] == "o" and game_result[2][2] == "o" :
+
+			return "o"
+
+	if game_result[0][2] == "x" and game_result[1][1] == "x" and game_result[2][0] == "x" :
+
+		return "x"
+
+	# else return draw
+	return "*"
 
 def main() :
 
@@ -101,6 +133,9 @@ def main() :
 	reloj = pygame.time.Clock()
 	salir = False
 
+	# data structure of the game
+
+	game = [[".",".","."],[".",".","."],[".",".","."]]
 
 	while salir != True :
 
@@ -123,16 +158,13 @@ def main() :
 				play(cursor1, piece8, player1, player2)
 				play(cursor1, piece9, player1, player2)
 
-
-
-
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
 
 		cursor1.update(pantalla)
 
-
 		draw_lines(pantalla)
+		
 		piece1.update(pantalla)
 		piece2.update(pantalla)
 		piece3.update(pantalla)
