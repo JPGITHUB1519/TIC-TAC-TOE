@@ -56,9 +56,13 @@ def draw_lines(pantalla) :
 
 def play(cursor, pieza, jugador1, jugador2, game_result, turnos) :
 
+	sound_push = pygame.mixer.Sound("music/push.wav")
+	cond_sound_push = False
+
 	if cursor.colliderect(pieza.rect) :
 
 		if jugador1.turno == True  and pieza.played == False:
+
 
 			pieza.image = pieza.imagen_o
 			pieza.type_piece = "o"
@@ -66,8 +70,8 @@ def play(cursor, pieza, jugador1, jugador2, game_result, turnos) :
 			jugador2.turno = True
 			pieza.played = True
 			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
+			cond_sound_push = check_sound(sound_push, cond_sound_push)
 			turnos += 1
-			
 
 		if jugador2.turno == True  and pieza.played == False:
 
@@ -77,6 +81,7 @@ def play(cursor, pieza, jugador1, jugador2, game_result, turnos) :
 			jugador2.turno = False
 			pieza.played = True
 			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
+			cond_sound_push = check_sound(sound_push, cond_sound_push)
 			turnos += 1
 	
 	return turnos
@@ -172,6 +177,16 @@ def show_menu(pantalla,cursor,botones) :
 
 	cursor.update(pantalla)
 
+def check_sound(sonido, cond) :
+
+	if cond == False :
+
+		sonido.play()
+
+	cond = True
+
+	return cond
+
 def main() :
 
 	pygame.init()
@@ -219,17 +234,29 @@ def main() :
 	texto_jugador2 = fuente_atarian.render("Jugador 2: " + player2.nombre, 0,(0,0,255))
 	text_play_again = fuente_atarian.render("Pulsa Espacio Para Jugar...",0,(0,0,255))
 	#images 
+
 	imagen_boton_jugar = pygame.image.load("images/jugar.png")
 	imagen_boton_jugar_hover = pygame.image.load("images/jugar_hover.png")
 	imagen_boton_salir = pygame.image.load("images/salir.png")
 	imagen_boton_salir_hover = pygame.image.load("images/salir_hover.png")
 	boton1 = Boton(imagen_boton_jugar, imagen_boton_jugar_hover, 100,400)
 	boton2 = Boton(imagen_boton_salir, imagen_boton_salir_hover,300,400)
+	
+	# sounds
+
+	main_channel = pygame.mixer.Channel(5)
+	sound_winner = pygame.mixer.Sound("music/winner.wav")
+	sound_draw = pygame.mixer.Sound("music/draw.wav")
+
 	#conds scenes
 	cond_menu = True
 	cond_game = False
 	cond_gameover = False
 
+	# cons sound
+	cond_sound_principal = False
+	cond_sound_winner = False
+	cond_sound_draw = False
 
 	while salir != True :
 
@@ -297,6 +324,16 @@ def main() :
 						winner = "none"
 						player1.turno = True
 						player2.turno = False
+						cond_sound_winner = False
+						cond_sound_draw = False
+
+					# if user press space and the music has no finish
+					if main_channel.get_busy() == True :
+
+						main_channel.stop()
+
+					pygame.mixer.music.rewind()
+					pygame.mixer.music.play()
 
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
@@ -306,6 +343,11 @@ def main() :
 			show_menu(pantalla, cursor1, [boton1, boton2])
 
 		if cond_game == True :
+
+			if cond_sound_principal == False :
+				pygame.mixer.music.load("music/principal.mp3")
+				pygame.mixer.music.play()
+				cond_sound_principal = True
 			cursor1.update(pantalla)
 			draw_lines(pantalla)
 			pantalla.blit(texto_jugador1,(50,445))
@@ -330,14 +372,31 @@ def main() :
 
 					texto_ganador = fuente_atarian2.render("Ganador : Jugador 1",0,(255,0,0))
 					pantalla.blit(texto_ganador,(50,500))
+
 				if winner == "x" :
 
 					texto_ganador = fuente_atarian2.render("Ganador : Jugador 2", 0,(255,0,0))
 					pantalla.blit(texto_ganador,(45,500))
+
+				if winner != "." :
+
+					if cond_sound_winner == False :
+
+						pygame.mixer.music.stop()
+						main_channel.play(sound_winner)
+						cond_sound_winner = True
+				
+
 				if winner == "." :
 
 					texto_ganador = fuente_atarian2.render("Empate", 0,(255,0,0))
 					pantalla.blit(texto_ganador,(175,500))
+					pygame.mixer.music.stop()
+
+					if cond_sound_draw == False :
+						main_channel.play(sound_draw)
+						cond_sound_draw = True
+
 
 				pantalla.blit(text_play_again,(100,20))
 				cond_gameover = True
