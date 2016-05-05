@@ -217,7 +217,7 @@ def main() :
 	fuente_atarian2 = pygame.font.Font("fonts/atarian.ttf", 60)
 	texto_jugador1 = fuente_atarian.render("Jugador 1 :" + player1.nombre, 0,(0,0,255))
 	texto_jugador2 = fuente_atarian.render("Jugador 2: " + player2.nombre, 0,(0,0,255))
-	
+	text_play_again = fuente_atarian.render("Pulsa Espacio Para Jugar...",0,(0,0,255))
 	#images 
 	imagen_boton_jugar = pygame.image.load("images/jugar.png")
 	imagen_boton_jugar_hover = pygame.image.load("images/jugar_hover.png")
@@ -228,6 +228,8 @@ def main() :
 	#conds scenes
 	cond_menu = True
 	cond_game = False
+	cond_gameover = False
+
 
 	while salir != True :
 
@@ -262,6 +264,39 @@ def main() :
 						pygame.quit()
 						# salir del programa
 						sys.exit(0)
+
+			# play again option
+			if event.type == pygame.KEYDOWN :
+				
+				if event.key == pygame.K_SPACE :
+					
+					if cond_gameover == True :
+
+						cond_gameover = False
+						piece1.image = piece1.imagen_transparente
+						piece1.played = False
+						piece2.image = piece2.imagen_transparente
+						piece2.played = False
+						piece3.image = piece3.imagen_transparente
+						piece3.played = False
+						piece4.image = piece4.imagen_transparente
+						piece4.played = False
+						piece5.image = piece5.imagen_transparente
+						piece5.played = False
+						piece6.image = piece6.imagen_transparente
+						piece6.played = False
+						piece7.image = piece7.imagen_transparente
+						piece7.played = False
+						piece8.image = piece8.imagen_transparente
+						piece8.played = False
+						piece9.image = piece9.imagen_transparente
+						piece9.played = False
+
+						game_result = [[".",".","."],[".",".","."],[".",".","."]]
+						turnos = 0
+						winner = "none"
+						player1.turno = True
+						player2.turno = False
 
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
@@ -303,6 +338,9 @@ def main() :
 
 					texto_ganador = fuente_atarian2.render("Empate", 0,(255,0,0))
 					pantalla.blit(texto_ganador,(175,500))
+
+				pantalla.blit(text_play_again,(100,20))
+				cond_gameover = True
 
 		
 		pygame.display.update()
