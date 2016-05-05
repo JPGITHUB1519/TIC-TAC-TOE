@@ -53,7 +53,7 @@ def draw_lines(pantalla) :
 		pygame.draw.line(pantalla, (0,0,0),(100,xyfinal),(400,xyfinal),1)
 		xyfinal += 100
 
-def play(cursor, pieza, jugador1, jugador2, game_result) :
+def play(cursor, pieza, jugador1, jugador2, game_result, turnos) :
 
 	if cursor.colliderect(pieza.rect) :
 
@@ -65,8 +65,7 @@ def play(cursor, pieza, jugador1, jugador2, game_result) :
 			jugador2.turno = True
 			pieza.played = True
 			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
-			
-
+			turnos += 1
 
 		if jugador2.turno == True  and pieza.played == False:
 
@@ -76,7 +75,11 @@ def play(cursor, pieza, jugador1, jugador2, game_result) :
 			jugador2.turno = False
 			pieza.played = True
 			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
-		
+			turnos += 1
+
+		print turnos
+	return turnos
+
 
 def check_structure(game_result) :
 
@@ -112,6 +115,12 @@ def check_structure(game_result) :
 	# else return draw
 	return "*"
 
+def check_winner(game_result) :
+
+	pass
+
+
+
 def main() :
 
 	pygame.init()
@@ -146,6 +155,11 @@ def main() :
 
 	game_result = [[".",".","."],[".",".","."],[".",".","."]]
 
+	# aux
+
+	flag_winner = False
+	turnos = 0
+
 	while salir != True :
 
 		for event in pygame.event.get() :
@@ -157,15 +171,15 @@ def main() :
 			if event.type == pygame.MOUSEBUTTONDOWN :
 
 				# if click and collide with the background
-				play(cursor1, piece1, player1, player2, game_result)
-				play(cursor1, piece2, player1, player2, game_result)
-				play(cursor1, piece3, player1, player2, game_result)
-				play(cursor1, piece4, player1, player2, game_result)
-				play(cursor1, piece5, player1, player2, game_result)
-				play(cursor1, piece6, player1, player2, game_result)
-				play(cursor1, piece7, player1, player2, game_result)
-				play(cursor1, piece8, player1, player2, game_result)
-				play(cursor1, piece9, player1, player2, game_result)
+				turnos = play(cursor1, piece1, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece2, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece3, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece4, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece5, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece6, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece7, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece8, player1, player2, game_result, turnos)
+				turnos = play(cursor1, piece9, player1, player2, game_result, turnos)
 
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
@@ -183,6 +197,9 @@ def main() :
 		piece7.update(pantalla)
 		piece8.update(pantalla)
 		piece9.update(pantalla)
+
+		# check the game result to see if there is a winner
+
 
 		pygame.display.update()
 
