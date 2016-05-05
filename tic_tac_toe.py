@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 pygame.init()
 
@@ -114,6 +115,29 @@ def check_structure(game_result) :
 	# else return draw
 	return "."
 
+class Boton(pygame.sprite.Sprite) :
+
+	def __init__(self, imagen1, imagen2, x = 200, y = 200) :
+
+		self.imagen_normal = imagen1
+		self.imagen_seleccion = imagen2
+		self.rect = self.imagen_normal.get_rect()
+		self.rect.left, self.rect.top = x,y 
+		self.imagen_actual = self.imagen_normal
+
+	def update(self, pantalla, cursor) :
+
+		if cursor.colliderect(self.rect) :
+
+			self.imagen_actual = self.imagen_normal
+
+		else :
+
+			self.imagen_actual = self.imagen_seleccion
+
+		pantalla.blit(self.imagen_actual, self.rect)
+
+
 def check_winner(game_result, turnos) :
 
 	winner = check_structure(game_result)
@@ -129,6 +153,24 @@ def check_winner(game_result, turnos) :
 			return winner
 
 	return "none"
+
+def show_menu(pantalla,cursor,botones) :
+
+	for button in botones :
+
+		button.update(pantalla, cursor)
+
+	fuente1 = pygame.font.Font("fonts/Pacifico.ttf",30)
+
+	#texto_titulo = fuente1.render("TIC TAC TOE GAME",0,(0,0,255))
+
+	#pantalla.blit(texto_titulo, (50,35))
+
+	image_title = pygame.image.load("images/tic_logo.jpg")
+
+	pantalla.blit(image_title, (75,150))
+
+	cursor.update(pantalla)
 
 def main() :
 
@@ -176,6 +218,17 @@ def main() :
 	texto_jugador1 = fuente_atarian.render("Jugador 1 :" + player1.nombre, 0,(0,0,255))
 	texto_jugador2 = fuente_atarian.render("Jugador 2: " + player2.nombre, 0,(0,0,255))
 	
+	#images 
+	imagen_boton_jugar = pygame.image.load("images/jugar.png")
+	imagen_boton_jugar_hover = pygame.image.load("images/jugar_hover.png")
+	imagen_boton_salir = pygame.image.load("images/salir.png")
+	imagen_boton_salir_hover = pygame.image.load("images/salir_hover.png")
+	boton1 = Boton(imagen_boton_jugar, imagen_boton_jugar_hover, 100,400)
+	boton2 = Boton(imagen_boton_salir, imagen_boton_salir_hover,300,400)
+	#conds scenes
+	cond_menu = True
+	cond_game = False
+
 	while salir != True :
 
 		for event in pygame.event.get() :
@@ -198,41 +251,58 @@ def main() :
 					turnos = play(cursor1, piece8, player1, player2, game_result, turnos)
 					turnos = play(cursor1, piece9, player1, player2, game_result, turnos)
 
+				if cond_menu == True :
+
+					if cursor1.colliderect(boton1.rect) :
+
+						cond_game = True
+						cond_menu = False
+					if cursor1.colliderect(boton2) :
+
+						pygame.quit()
+						# salir del programa
+						sys.exit(0)
+
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
 
-		cursor1.update(pantalla)
-		draw_lines(pantalla)
-		pantalla.blit(texto_jugador1,(50,445))
-		pantalla.blit(texto_jugador2,(270,445))
+		if cond_menu == True :
 
-		piece1.update(pantalla)
-		piece2.update(pantalla)
-		piece3.update(pantalla)
-		piece4.update(pantalla)
-		piece5.update(pantalla)
-		piece6.update(pantalla)
-		piece7.update(pantalla)
-		piece8.update(pantalla)
-		piece9.update(pantalla)
+			show_menu(pantalla, cursor1, [boton1, boton2])
 
-		# check the game result to see if there is a winner
-		winner = check_winner(game_result, turnos)
+		if cond_game == True :
+			cursor1.update(pantalla)
+			draw_lines(pantalla)
+			pantalla.blit(texto_jugador1,(50,445))
+			pantalla.blit(texto_jugador2,(270,445))
 
-		if winner != "none" :
+			piece1.update(pantalla)
+			piece2.update(pantalla)
+			piece3.update(pantalla)
+			piece4.update(pantalla)
+			piece5.update(pantalla)
+			piece6.update(pantalla)
+			piece7.update(pantalla)
+			piece8.update(pantalla)
+			piece9.update(pantalla)
 
-			if winner == "o" :
+			# check the game result to see if there is a winner
+			winner = check_winner(game_result, turnos)
 
-				texto_ganador = fuente_atarian2.render("Ganador : Jugador 1",0,(255,0,0))
-				pantalla.blit(texto_ganador,(50,500))
-			if winner == "x" :
+			if winner != "none" :
 
-				texto_ganador = fuente_atarian2.render("Ganador : Jugador 2", 0,(255,0,0))
-				pantalla.blit(texto_ganador,(45,500))
-			if winner == "." :
+				if winner == "o" :
 
-				texto_ganador = fuente_atarian2.render("Ganador : Empate", 0,(255,0,0))
-				pantalla.blit(texto_ganador,(45,500))
+					texto_ganador = fuente_atarian2.render("Ganador : Jugador 1",0,(255,0,0))
+					pantalla.blit(texto_ganador,(50,500))
+				if winner == "x" :
+
+					texto_ganador = fuente_atarian2.render("Ganador : Jugador 2", 0,(255,0,0))
+					pantalla.blit(texto_ganador,(45,500))
+				if winner == "." :
+
+					texto_ganador = fuente_atarian2.render("Ganador : Empate", 0,(255,0,0))
+					pantalla.blit(texto_ganador,(45,500))
 
 		
 		pygame.display.update()
