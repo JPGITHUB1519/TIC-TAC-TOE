@@ -9,6 +9,7 @@ class Piece(pygame.sprite.Sprite) :
 		self.imagen_o = pygame.image.load("images/o.png")
 		self.imagen_transparente = pygame.image.load("images/fondo_transparente.png")
 		self.type_piece = ""
+		self.played = False
 		self.image = self.imagen_transparente
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = x,y
@@ -50,6 +51,24 @@ def draw_lines(pantalla) :
 
 		pygame.draw.line(pantalla, (0,0,0),(100,xyfinal),(400,xyfinal),1)
 		xyfinal += 100
+
+def play(cursor, pieza, jugador1, jugador2) :
+
+	if cursor.colliderect(pieza.rect) :
+
+		if jugador1.turno == True  and pieza.played == False:
+
+			pieza.image = pieza.imagen_o
+			jugador1.turno = False
+			jugador2.turno = True
+			pieza.played = True
+
+		if jugador2.turno == True  and pieza.played == False:
+
+			pieza.image = pieza.imagen_x
+			jugador1.turno = True
+			jugador2.turno = False
+			pieza.played = True
 		
 
 def main() :
@@ -59,8 +78,26 @@ def main() :
 	pantalla = pygame.display.set_mode([700,500])
 
 	cursor1 = Cursor()
+
+	# Pieces
+	xpiece = 110
 	piece1 = Piece(110,110)
-	piece2 = Piece(110,110)
+	piece2 = Piece(215,110)
+	piece3 = Piece(310,110)
+	piece4 = Piece(110,210)
+	piece5 = Piece(215,210)
+	piece6 = Piece(310,210)
+	piece7 = Piece(110,310)
+	piece8 = Piece(215,310)
+	piece9 = Piece(310,310)
+
+	# Players
+
+	player1 = Jugador("Jean")
+	player2 = Jugador("Anonimo")
+
+	player1.turno = True
+
 	reloj = pygame.time.Clock()
 	salir = False
 
@@ -72,21 +109,40 @@ def main() :
 			if event.type == pygame.QUIT :
 
 				salir = True
+			
+			if event.type == pygame.MOUSEBUTTONDOWN :
+
+				# if click and collide with the background
+				play(cursor1, piece1, player1, player2)
+				play(cursor1, piece2, player1, player2)
+				play(cursor1, piece3, player1, player2)
+				play(cursor1, piece4, player1, player2)
+				play(cursor1, piece5, player1, player2)
+				play(cursor1, piece6, player1, player2)
+				play(cursor1, piece7, player1, player2)
+				play(cursor1, piece8, player1, player2)
+				play(cursor1, piece9, player1, player2)
+
+
+
 
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
 
 		cursor1.update(pantalla)
 
-		# colisions
-		if cursor1.colliderect(piece1.rect) :
 
-			piece1.image = piece1.imagen_x
 		draw_lines(pantalla)
 		piece1.update(pantalla)
-		#y1.update(pantalla)
+		piece2.update(pantalla)
+		piece3.update(pantalla)
+		piece4.update(pantalla)
+		piece5.update(pantalla)
+		piece6.update(pantalla)
+		piece7.update(pantalla)
+		piece8.update(pantalla)
+		piece9.update(pantalla)
 		pygame.display.update()
-
 
 	pygame.quit()
 
