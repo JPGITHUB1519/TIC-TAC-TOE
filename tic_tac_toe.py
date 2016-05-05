@@ -86,7 +86,7 @@ def check_structure(game_result) :
 
 	for x in range(0,3) :
 
-		if (game_result[x][0] == game_result[x][1] == game_result[x][2]) and game_result[x] != "." :
+		if (game_result[x][0] == game_result[x][1] == game_result[x][2]) and game_result[x][0] != "." :
 
 			return game_result[x][0]
 
@@ -94,7 +94,7 @@ def check_structure(game_result) :
 
 	for x in range(0,3) :
 
-		if (game_result[0][x] == game_result[1][x] == game_result[2][x]) and game_result[x] != "." :
+		if (game_result[0][x] == game_result[1][x] == game_result[2][x]) and game_result[0][x] != "." :
 
 			return game_result[0][x]
 
@@ -134,7 +134,7 @@ def main() :
 
 	pygame.init()
 
-	pantalla = pygame.display.set_mode([700,500])
+	pantalla = pygame.display.set_mode([500,600])
 
 	cursor1 = Cursor()
 
@@ -169,6 +169,13 @@ def main() :
 	winner = ""
 	turnos = 0
 
+	# fuentes
+
+	fuente_atarian = pygame.font.Font("fonts/atarian.ttf", 35)
+	fuente_atarian2 = pygame.font.Font("fonts/atarian.ttf", 60)
+	texto_jugador1 = fuente_atarian.render("Jugador 1 :" + player1.nombre, 0,(0,0,255))
+	texto_jugador2 = fuente_atarian.render("Jugador 2: " + player2.nombre, 0,(0,0,255))
+	
 	while salir != True :
 
 		for event in pygame.event.get() :
@@ -195,8 +202,9 @@ def main() :
 		pantalla.fill((255,255,255))
 
 		cursor1.update(pantalla)
-
 		draw_lines(pantalla)
+		pantalla.blit(texto_jugador1,(50,445))
+		pantalla.blit(texto_jugador2,(270,445))
 
 		piece1.update(pantalla)
 		piece2.update(pantalla)
@@ -211,7 +219,25 @@ def main() :
 		# check the game result to see if there is a winner
 		winner = check_winner(game_result, turnos)
 
+		if winner != "none" :
+
+			if winner == "o" :
+
+				texto_ganador = fuente_atarian2.render("Ganador : Jugador 1",0,(255,0,0))
+				pantalla.blit(texto_ganador,(50,500))
+			if winner == "x" :
+
+				texto_ganador = fuente_atarian2.render("Ganador : Jugador 2", 0,(255,0,0))
+				pantalla.blit(texto_ganador,(45,500))
+			if winner == "." :
+
+				texto_ganador = fuente_atarian2.render("Ganador : Empate", 0,(255,0,0))
+				pantalla.blit(texto_ganador,(45,500))
+
+		
 		pygame.display.update()
+
+		
 
 	pygame.quit()
 
