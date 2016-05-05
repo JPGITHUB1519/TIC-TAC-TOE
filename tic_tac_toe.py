@@ -17,6 +17,16 @@ class Piece(pygame.sprite.Sprite) :
 
 		pantalla.blit(self.image, self.rect)
 
+	class Cursor(pygame.Rect) :
+
+		def __init__(self) :
+
+			pygame.Rect.__init__(0,0,0,1)
+
+		def update(self, pantalla) :
+
+			self.left, self.top = pygame.mouse.get_pos()
+
 
 def draw_lines(pantalla) :
 
