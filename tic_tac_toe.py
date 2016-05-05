@@ -301,8 +301,8 @@ def main() :
 					pantalla.blit(texto_ganador,(45,500))
 				if winner == "." :
 
-					texto_ganador = fuente_atarian2.render("Ganador : Empate", 0,(255,0,0))
-					pantalla.blit(texto_ganador,(45,500))
+					texto_ganador = fuente_atarian2.render("Empate", 0,(255,0,0))
+					pantalla.blit(texto_ganador,(175,500))
 
 		
 		pygame.display.update()
