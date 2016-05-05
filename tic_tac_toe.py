@@ -66,6 +66,9 @@ def play(cursor, pieza, jugador1, jugador2, game_result, turnos) :
 			pieza.played = True
 			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
 			turnos += 1
+			winner = check_winner(game_result, turnos)
+			print winner
+			print turnos
 
 		if jugador2.turno == True  and pieza.played == False:
 
@@ -76,8 +79,10 @@ def play(cursor, pieza, jugador1, jugador2, game_result, turnos) :
 			pieza.played = True
 			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
 			turnos += 1
+			winner = check_winner(game_result, turnos)
+			print winner
+			print turnos
 
-		print turnos
 	return turnos
 
 
@@ -113,12 +118,23 @@ def check_structure(game_result) :
 		return game_result[0][2]
 
 	# else return draw
-	return "*"
+	return "."
 
-def check_winner(game_result) :
+def check_winner(game_result, turnos) :
 
-	pass
+	winner = check_structure(game_result)
 
+	if winner != "." :
+
+		return winner
+
+	if turnos == 9 :
+
+		if winner == "." :
+
+			return winner
+
+	return "none"
 
 
 def main() :
@@ -157,7 +173,7 @@ def main() :
 
 	# aux
 
-	flag_winner = False
+	winner = ""
 	turnos = 0
 
 	while salir != True :
