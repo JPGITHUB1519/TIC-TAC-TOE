@@ -4,12 +4,13 @@ pygame.init()
 
 class Piece(pygame.sprite.Sprite) :
 
-	def __init__(self,x,y) :
+	def __init__(self,x,y,pos) :
 		self.imagen_x = pygame.image.load("images/x.png")
 		self.imagen_o = pygame.image.load("images/o.png")
 		self.imagen_transparente = pygame.image.load("images/fondo_transparente.png")
 		self.type_piece = ""
 		self.played = False
+		self.pos = pos
 		self.image = self.imagen_transparente
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = x,y
@@ -52,23 +53,30 @@ def draw_lines(pantalla) :
 		pygame.draw.line(pantalla, (0,0,0),(100,xyfinal),(400,xyfinal),1)
 		xyfinal += 100
 
-def play(cursor, pieza, jugador1, jugador2) :
+def play(cursor, pieza, jugador1, jugador2, game_result) :
 
 	if cursor.colliderect(pieza.rect) :
 
 		if jugador1.turno == True  and pieza.played == False:
 
 			pieza.image = pieza.imagen_o
+			pieza.type_piece = "o"
 			jugador1.turno = False
 			jugador2.turno = True
 			pieza.played = True
+			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
+			
+
 
 		if jugador2.turno == True  and pieza.played == False:
 
 			pieza.image = pieza.imagen_x
+			pieza.type_piece = "x"
 			jugador1.turno = True
 			jugador2.turno = False
 			pieza.played = True
+			game_result[pieza.pos[0]][pieza.pos[1]] = pieza.type_piece
+		
 
 def check_structure(game_result) :
 
@@ -92,13 +100,14 @@ def check_structure(game_result) :
 
 	# principal diagonal
 
-	if game_result[0][0] == "o" and game_result[1][1] == "o" and game_result[2][2] == "o" :
+	if(game_result[0][0] == game_result[1][1] == game_result[2][2]) and game_result[0][0] != "." :
 
-			return "o"
+		return game_result[0][0]
 
-	if game_result[0][2] == "x" and game_result[1][1] == "x" and game_result[2][0] == "x" :
-
-		return "x"
+	#check secundary diagonal
+	if(game_result[0][2] == game_result[1][1] == game_result[2][0]) and game_result[0][2] != "." :
+		
+		return game_result[0][2]
 
 	# else return draw
 	return "*"
@@ -113,15 +122,15 @@ def main() :
 
 	# Pieces
 	xpiece = 110
-	piece1 = Piece(110,110)
-	piece2 = Piece(215,110)
-	piece3 = Piece(310,110)
-	piece4 = Piece(110,210)
-	piece5 = Piece(215,210)
-	piece6 = Piece(310,210)
-	piece7 = Piece(110,310)
-	piece8 = Piece(215,310)
-	piece9 = Piece(310,310)
+	piece1 = Piece(110,110,[0,0])
+	piece2 = Piece(215,110,[0,1])
+	piece3 = Piece(310,110,[0,2])
+	piece4 = Piece(110,210,[1,0])
+	piece5 = Piece(215,210,[1,1])
+	piece6 = Piece(310,210,[1,2])
+	piece7 = Piece(110,310,[2,0])
+	piece8 = Piece(215,310,[2,1])
+	piece9 = Piece(310,310,[2,2])
 
 	# Players
 
@@ -135,7 +144,7 @@ def main() :
 
 	# data structure of the game
 
-	game = [[".",".","."],[".",".","."],[".",".","."]]
+	game_result = [[".",".","."],[".",".","."],[".",".","."]]
 
 	while salir != True :
 
@@ -148,15 +157,15 @@ def main() :
 			if event.type == pygame.MOUSEBUTTONDOWN :
 
 				# if click and collide with the background
-				play(cursor1, piece1, player1, player2)
-				play(cursor1, piece2, player1, player2)
-				play(cursor1, piece3, player1, player2)
-				play(cursor1, piece4, player1, player2)
-				play(cursor1, piece5, player1, player2)
-				play(cursor1, piece6, player1, player2)
-				play(cursor1, piece7, player1, player2)
-				play(cursor1, piece8, player1, player2)
-				play(cursor1, piece9, player1, player2)
+				play(cursor1, piece1, player1, player2, game_result)
+				play(cursor1, piece2, player1, player2, game_result)
+				play(cursor1, piece3, player1, player2, game_result)
+				play(cursor1, piece4, player1, player2, game_result)
+				play(cursor1, piece5, player1, player2, game_result)
+				play(cursor1, piece6, player1, player2, game_result)
+				play(cursor1, piece7, player1, player2, game_result)
+				play(cursor1, piece8, player1, player2, game_result)
+				play(cursor1, piece9, player1, player2, game_result)
 
 		reloj.tick(20)
 		pantalla.fill((255,255,255))
@@ -164,7 +173,7 @@ def main() :
 		cursor1.update(pantalla)
 
 		draw_lines(pantalla)
-		
+
 		piece1.update(pantalla)
 		piece2.update(pantalla)
 		piece3.update(pantalla)
@@ -174,7 +183,9 @@ def main() :
 		piece7.update(pantalla)
 		piece8.update(pantalla)
 		piece9.update(pantalla)
+
 		pygame.display.update()
+
 
 	pygame.quit()
 
